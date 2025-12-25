@@ -8,12 +8,12 @@ if __name__ == "__main__":
     title = "bunny_ox_icosahedron"
     description = "Bunny_Ox_Hits_Icosahedron"
 
-    object_physics_file = ["bunny_200.obj", "cow_simplified_5000.obj", "icosahedron_subdivided_1.obj"]
+    object_physics_file = ["bunny_200_subdivided_1.obj", "cow_simplified_5000.obj", "icosahedron_subdivided_2.obj"]
     object_render_file = ["bunny_200_subdivided_3.obj", "cow.obj", "icosahedron_subdivided_4.obj"]
     object_scale_factors = [2.0, 0.04, 1.0]
 
     is_static_list = [False, False, True]
-    position_list = [np.array([0.0, 1.234, 0.0]), np.array([0.0, 3.123, 0.0]), np.array([0.0, 0.0, 0.0])]
+    position_list = [np.array([0.0, 1.234, 0.025]), np.array([0.18, 1.85, -0.16]), np.array([0.0, 0.0, 0.0])]
     orientation_list = [np.array([1.0, 0.0, 0.0, 0.0]), np.array([1.0, 0.0, 0.0, 0.0]), np.array([1.0, 0.0, 0.0, 0.0])]
     density_list = [800.0, 800.0, 1000.0]
     restitution_list = [0.8, 0.8, 0.8]
@@ -21,7 +21,7 @@ if __name__ == "__main__":
     velocity_list = [np.array([0.0, 0.0, 0.0]), np.array([0.0, 0.0, 0.0]), None]
     angular_velocity_list = [np.array([0.0, 0.0, 0.0]), np.array([0.0, 0.0, 0.0]), None]
 
-    duration = 3.33
+    duration = 1.5
     fps = 240.0
     gravity=config.physics.GRAVITY_EARTH
 

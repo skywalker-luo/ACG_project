@@ -21,7 +21,7 @@ if __name__ == "__main__":
     velocity_list = [np.array([0.0, 0.0, 0.0]), None]
     angular_velocity_list = [np.array([0.0, 0.0, 0.0]), None]
 
-    duration = 3.33
+    duration = 2.5
     fps = 240.0
     gravity=config.physics.GRAVITY_EARTH
 
