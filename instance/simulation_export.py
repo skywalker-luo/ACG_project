@@ -40,6 +40,8 @@ def run_simulation_export(
     friction_list: List[float],
     velocity_list: Optional[List[np.ndarray]] = None,
     angular_velocity_list: Optional[List[np.ndarray]] = None,
+    object_shape_list: Optional[List[str]] = None,
+    object_shape_params_list: Optional[List[dict]] = None,
     
     # ============ 仿真参数 ============
     duration: float = 3.33,  # 仿真时长（秒）
@@ -70,16 +72,39 @@ def run_simulation_export(
     
     # 加载物理网格
     object_physics_meshes = []
-    for path, scale in zip(object_physics_path_list, object_scale_factors):
-        mesh = Mesh.from_file(str(path))
+    for idx, (path, scale) in enumerate(zip(object_physics_path_list, object_scale_factors)):
+        shape = None
+        shape_params = None
+        if object_shape_list is not None and idx < len(object_shape_list):
+            shape = object_shape_list[idx]
+        if object_shape_params_list is not None and idx < len(object_shape_params_list):
+            shape_params = object_shape_params_list[idx]
+
+        if shape is not None:
+            mesh = Mesh.from_file(str(path), shape=shape, shape_params=shape_params)
+        else:
+            mesh = Mesh.from_file(str(path))
+
         mesh.scale(scale)
         object_physics_meshes.append(mesh)
         print(f"  ✓ 物理网格: {path.name} - {len(mesh.vertices)} 顶点, {len(mesh.faces)} 三角形")
     
     # 加载渲染网格
     object_render_meshes = []
-    for path, scale in zip(object_render_path_list, object_scale_factors):
-        mesh = Mesh.from_file(str(path))
+    for idx, (path, scale) in enumerate(zip(object_render_path_list, object_scale_factors)):
+        # 渲染网格通常不需要 shape 信息，但如果提供则传递
+        shape = None
+        shape_params = None
+        if object_shape_list is not None and idx < len(object_shape_list):
+            shape = object_shape_list[idx]
+        if object_shape_params_list is not None and idx < len(object_shape_params_list):
+            shape_params = object_shape_params_list[idx]
+
+        if shape is not None:
+            mesh = Mesh.from_file(str(path), shape=shape, shape_params=shape_params)
+        else:
+            mesh = Mesh.from_file(str(path))
+
         mesh.scale(scale)
         object_render_meshes.append(mesh)
         print(f"  ✓ 渲染网格: {path.name} - {len(mesh.vertices)} 顶点, {len(mesh.faces)} 三角形")

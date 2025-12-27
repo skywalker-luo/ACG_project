@@ -15,7 +15,7 @@ class Mesh:
     三角网格类，用于存储和处理网格数据
     """
     
-    def __init__(self, vertices: np.ndarray = None, faces: np.ndarray = None):
+    def __init__(self, vertices: np.ndarray = None, faces: np.ndarray = None, shape: str = None, shape_params: dict = None):
         """
         初始化网格
         
@@ -33,9 +33,12 @@ class Mesh:
         self._total_area = None
         self._aabb = None
         self._dirty = True  # 标记是否需要重新计算缓存
+        # 可选的几何类型标记（例如 'sphere'）和参数（如 {'radius': ...}）
+        self.shape = shape
+        self.shape_params = shape_params if shape_params is not None else {}
     
     @classmethod
-    def from_file(cls, filepath: str) -> 'Mesh':
+    def from_file(cls, filepath: str, shape: str = None, shape_params: dict = None) -> 'Mesh':
         """
         从文件加载网格
         """
@@ -45,12 +48,12 @@ class Mesh:
             raise FileNotFoundError(f"网格文件不存在: {filepath}")
         
         if filepath.suffix.lower() == '.obj':
-            return cls._load_obj(filepath)
+            return cls._load_obj(filepath, shape=shape, shape_params=shape_params)
         else:
             raise ValueError(f"不支持的文件格式: {filepath.suffix}")
     
     @classmethod
-    def _load_obj(cls, filepath: Path) -> 'Mesh':
+    def _load_obj(cls, filepath: Path, shape: str = None, shape_params: dict = None) -> 'Mesh':
         """
         加载OBJ文件
         """
@@ -115,8 +118,11 @@ class Mesh:
         faces_array = np.array(faces, dtype=np.int32) if faces else np.empty((0, 3), dtype=np.int32)
         
         print(f"成功加载网格: {len(vertices_array)} 个顶点, {len(faces_array)} 个三角形")
-        
-        return cls(vertices_array, faces_array)
+
+        # 使用调用方传入的 shape 与 shape_params（如果有）来标注网格类型，
+        # 否则保持为通用 Mesh
+        mesh = cls(vertices_array, faces_array, shape=shape, shape_params=shape_params if shape_params is not None else {})
+        return mesh
     
     def compute_face_normals(self) -> np.ndarray:
         """

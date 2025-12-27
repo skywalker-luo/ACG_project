@@ -83,6 +83,60 @@ class Narrowphase:
             return contacts
         
         # 三角形-三角形检测（带AABB早期剪枝）
+        # 如果两个网格都被标记为球体，可以使用快速的球心距离检测
+        try:
+            is_sphere1 = getattr(body1.mesh, 'shape', None) == 'sphere'
+            is_sphere2 = getattr(body2.mesh, 'shape', None) == 'sphere'
+        except Exception:
+            is_sphere1 = False
+            is_sphere2 = False
+
+        if is_sphere1 and is_sphere2:
+            # 从 shape_params 中读取半径（如果没有则回退到顶点计算）
+            def get_radius(body):
+                mesh = body.mesh
+                r = None
+                if hasattr(mesh, 'shape_params') and mesh.shape_params is not None:
+                    r = mesh.shape_params.get('radius', None)
+                if r is None:
+                    # 计算为顶点到局部原点的最大距离
+                    try:
+                        r = float(np.max(np.linalg.norm(mesh.vertices, axis=1)))
+                    except Exception:
+                        r = 0.0
+                return float(r)
+
+            r1 = get_radius(body1)
+            r2 = get_radius(body2)
+
+            p1 = np.array(body1.position)
+            p2 = np.array(body2.position)
+            dvec = p1 - p2
+            dist = np.linalg.norm(dvec)
+
+            # 允许一个小的容差来避免数值抖动导致的误判
+            if dist > (r1 + r2 + self.tolerance):
+                return contacts
+
+            # 计算法线（从 body1 指向 body2）和接触点
+            if dist < 1e-12:
+                normal = np.array([1.0, 0.0, 0.0])
+            else:
+                normal = dvec / dist
+
+            p_on_1 = p1 + normal * r1
+            p_on_2 = p2 - normal * r2
+            contact_point = (p_on_1 + p_on_2) * 0.5
+            penetration = (r1 + r2) - dist
+
+            # 仅当穿透明显大于容差时才报告碰撞，避免在接触或极小间隙时抖动
+            if penetration <= self.tolerance:
+                return contacts
+
+            contact = create_contact(body1, body2, contact_point, normal, penetration, triangle1_id=-1, triangle2_id=-1)
+            contacts.append(contact)
+            return contacts
+
         for i, face1 in enumerate(faces1):
             tri1 = vertices1[face1]
             
