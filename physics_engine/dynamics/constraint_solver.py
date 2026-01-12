@@ -188,13 +188,6 @@ class ConstraintSolver:
     def _prepare_position_constraint(self, contact: ContactInfo, dt: float) -> Optional[dict]:
         """
         预处理位置约束数据（Baumgarte稳定化）
-        
-        Args:
-            contact: 接触信息
-            dt: 时间步长
-            
-        Returns:
-            位置约束数据字典，如果无效则返回None
         """
         # 对于弹性碰撞（有速度约束的碰撞），不应该再施加位置约束
         # 因为位置约束会抵消速度约束产生的弹跳效果

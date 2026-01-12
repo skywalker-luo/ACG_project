@@ -115,8 +115,8 @@ def run_simulation_export(
     print("\n【2】创建刚体...")
 
     object_vertices = [mesh.vertices for mesh in object_physics_meshes]
-    object_mins = [verts.min(axis=0) for verts in object_vertices]
-    object_maxs = [verts.max(axis=0) for verts in object_vertices]
+    # object_mins = [verts.min(axis=0) for verts in object_vertices]
+    # object_maxs = [verts.max(axis=0) for verts in object_vertices]
 
     body_list = []
     
