@@ -2,3 +2,5 @@ output/
 mesh/
 __pycache__/
 texture/
+plan.md
+instance/bunny_hits_icosahedron_export.py

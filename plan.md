@@ -110,10 +110,31 @@ constraint_solver.py
 刚体碰撞法向冲量公式
 
 $$
-J = \frac{-(1 + e) \cdot v_n}
+J_n = \frac{-(1 + e) \cdot v_n}
 {\frac{1}{m_1} + \frac{1}{m_2} + \hat{n} \cdot 
 ((I_1^{-1} (\vec{r_1} \times \hat{n}) \times \vec{r_1}) +
 (I_2^{-1} (\vec{r_2} \times \hat{n}) \times \vec{r_2}))}
+$$
+
+$$j_t^{desired} = - \frac{\|\vec{v}_t\|}{K_t^{-1}} = - \|\vec{v}_t\| \cdot K_t$$
+
+$$K_t^{-1} = \frac{1}{m_1} + \frac{1}{m_2} + (\vec{r}_1 \times \hat{t}) \cdot \mathbf{I}_1^{-1} (\vec{r}_1 \times \hat{t}) + (\vec{r}_2 \times \hat{t}) \cdot \mathbf{I}_2^{-1} (\vec{r}_2 \times \hat{t})$$
+
+$$j_t = \begin{cases}
+j_t^{desired} & \text{if } |j_t^{desired}| \leq \mu_s |j_n| \quad \text{(静摩擦)} \\
+-\text{sign}(j_t^{desired}) \cdot \mu_k |j_n| & \text{otherwise} \quad \text{(动摩擦)}
+\end{cases}$$
+
+$$J_t = \begin{cases}
+J_t^{desired} & \text{if } |J_t^{desired}| \leq \mu |J_n|\\
+-\mu |J_n|\hat{t} & \text{otherwise}
+\end{cases}$$
+
+$$
+J_t^{desired} = \frac{-v_t}
+{\frac{1}{m_1} + \frac{1}{m_2} + \hat{t} \cdot 
+((I_1^{-1} (\vec{r_1} \times \hat{t}) \times \vec{r_1}) +
+(I_2^{-1} (\vec{r_2} \times \hat{t}) \times \vec{r_2}))}
 $$
 
 变量说明：
